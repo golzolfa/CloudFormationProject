@@ -43,6 +43,8 @@ Parameters:
     Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
   EC2KeyPair:
     Type: AWS::EC2::KeyPair::KeyName
+    Description: "Select an EC2 Key Pair"
+    Default: "my-ec2-keypair"  # Default value if any
   DBInstanceID:
     Type: String
     Description: "Enter Your RDS Instance Name"
