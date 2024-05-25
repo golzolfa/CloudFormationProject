@@ -385,8 +385,3 @@ Resources:
       SecurityGroupIds: 
         - !Ref InstanceSecurityGroup
       SubnetId: !Ref publicSubnet1
-
-
-
-
-this is test
