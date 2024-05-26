@@ -4,25 +4,27 @@ Description: CloudFormation template to create a VPC, subnets, security groups, 
 Parameters:
   bucketName:
     Type: String
-    Default: "mys3bucket"
+    Default: "golnazfinalexambucket"
     Description: "Enter Your S3 Bucket"
   vpcCIDR:
     Type: String
-    Default: "XXX.XXX.0.0/16"
+    Default: "10.0.0.0/16"
     Description: "Enter Your VPC CIDR"
   subnet1CIDR:
     Type: String
-    Default: "XXX.XXX.1.0/24"
+    Default: '10.0.1.0/24'
     Description: "Enter Your Subnet1 CIDR"
   subnet2CIDR:
     Type: String
-    Default: "XXX.XXX.2.0/24"
+    Default: '10.0.2.0/24'
     Description: "Enter Your Subnet2 CIDR"
   az1:
     Type: String
+    Default: 'us-west-2a'
     Description: "Enter Your AZ-1 ID"
   az2:
     Type: String
+    Default: 'us-west-2b'
     Description: "Enter Your AZ-2 ID"
   dbPort:
     Type: Number
@@ -43,17 +45,18 @@ Parameters:
     Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
   EC2KeyPair:
     Type: AWS::EC2::KeyPair::KeyName
-    Description: "Select an EC2 Key Pair"
-    Default: "my-ec2-keypair"  # Default value if any
+    Default : "golnaz-keypair"
   DBInstanceID:
     Type: String
+    Default: 'MyAppDBInstance'
     Description: "Enter Your RDS Instance Name"
   DBName:
     Type: String
+    Default: 'MyAppDatabase'
     Description: "Enter Your RDS DB Name"
   DBInstanceClass:
     Type: String
-    Default: db.t2.micro
+    Default: db.t3.micro
     Description: "Enter Your RDS Instance Class"
   DBAllocatedStorage:
     Default: '20'
@@ -73,6 +76,7 @@ Parameters:
   DBUsername:
     NoEcho: 'true'
     Description: Username for MySQL database access
+    Default: 'golzolfa'
     Type: String
     MinLength: '1'
     MaxLength: '16'
@@ -81,6 +85,7 @@ Parameters:
   DBPassword:
     NoEcho: 'true'
     Description: Password MySQL database access
+    Default: 'Metroc1234'
     Type: String
     MinLength: '8'
     MaxLength: '41'
@@ -268,48 +273,60 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
-                Action:
-                  - "s3:*"
+                Action: s3:*
                 Resource: "*"
 
-  DBSubnetGroup: 
-    Type: "AWS::RDS::DBSubnetGroup"
-    Properties: 
-      DBSubnetGroupDescription: CustomSubnetGroup
-      SubnetIds: 
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
-    
-  rdsDBInstance:
-    Type: 'AWS::RDS::DBInstance'
+  DBInstance:
+    Type: AWS::RDS::DBInstance
     Properties:
       DBInstanceIdentifier: !Ref DBInstanceID
-      DBName: !Ref DBName
-      DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: !Ref DBAllocatedStorage
+      DBInstanceClass: !Ref DBInstanceClass
       Engine: !Ref DBEngine
-      EngineVersion: "8.0.33"
+      EngineVersion: !Ref EngineVersion
       MasterUsername: !Ref DBUsername
       MasterUserPassword: !Ref DBPassword
-      VPCSecurityGroups: 
+      DBName: !Ref DBName
+      VPCSecurityGroups:
         - !Ref RDSSecurityGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      PubliclyAccessible: true
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnets for RDS DB Instance
+      SubnetIds:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
 
 Outputs:
   VPCId:
     Description: VPC ID
     Value: !Ref VPC
-  PublicSubnet1Id:
+
+  PublicSubnet1:
     Description: Public Subnet 1 ID
     Value: !Ref PublicSubnet1
-  PublicSubnet2Id:
+
+  PublicSubnet2:
     Description: Public Subnet 2 ID
     Value: !Ref PublicSubnet2
-  AutoScalingGroupName:
-    Description: Auto Scaling Group Name
-    Value: !Ref AutoScalingGroup
+
   ALBArn:
     Description: Application Load Balancer ARN
-    Value: !GetAtt ALB.Arn
-  S3BucketName:
-    Description: S3 Bucket Name
-    Value: !Ref S3Bucket
+    Value: !GetAtt ALB.LoadBalancerArn
+
+  ALBDNSName:
+    Description: Application Load Balancer DNS Name
+    Value: !GetAtt ALB.DNSName
+
+  AutoScalingGroup:
+    Description: Auto Scaling Group Name
+    Value: !Ref AutoScalingGroup
+
+  DBInstanceEndpoint:
+    Description: The connection endpoint for the RDS DB instance
+    Value: !GetAtt DBInstance.Endpoint.Address
