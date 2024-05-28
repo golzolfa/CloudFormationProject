@@ -1,6 +1,11 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template to create a VPC, subnets, security groups, ASG, ALB, S3, IAM roles and RDS.
+Description: CloudFormation template to create a VPC, subnets, security groups, ASG, ALB, S3, IAM roles and RDS
+
+Metadata:
+  author: Golnaz Zolfaghari
+  creation_date: '2024-05-26'
+  unique_id: 12345-abcde-67890-fghij
 
 
 Parameters:
@@ -117,7 +122,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
 
-    
+
   DBPassword:
     NoEcho: 'true'
     Description: Password MySQL database access
