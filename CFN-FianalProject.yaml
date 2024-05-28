@@ -8,34 +8,50 @@ Parameters:
     Type: String
     Default: "golnazfinalexambucket"
     Description: "Enter Your S3 Bucket"
+
+
   vpcCIDR:
     Type: String
     Default: "10.0.0.0/16"
     Description: "Enter Your VPC CIDR"
+
+
   subnet1CIDR:
     Type: String
     Default: '10.0.1.0/24'
     Description: "Enter Your Subnet1 CIDR"
+
+
   subnet2CIDR:
     Type: String
     Default: '10.0.2.0/24'
     Description: "Enter Your Subnet2 CIDR"
+
+
   az1:
     Type: String
     Default: 'us-west-2a'
     Description: "Enter Your AZ-1 ID"
+
+
   az2:
     Type: String
     Default: 'us-west-2b'
     Description: "Enter Your AZ-2 ID"
+
+
   dbPort:
     Type: Number
     Default: 3306
     Description: "Enter Your Database Port Number"
+
+
   amiID:
     Type: String
     Default: 'ami-059df5c7bfaeaff1d'
     Description: "Enter Your EC2 AMI ID"
+
+
   InstanceTypeParameter:
     Type: String
     Default: t2.micro
@@ -45,21 +61,31 @@ Parameters:
       - m1.large
       - t3.micro
     Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+
+
   EC2KeyPair:
     Type: AWS::EC2::KeyPair::KeyName
     Default : "golnaz-keypair"
+
+
   DBInstanceID:
     Type: String
     Default: 'MyAppDBInstance'
     Description: "Enter Your RDS Instance Name"
+
+
   DBName:
     Type: String
     Default: 'MyAppDatabase'
     Description: "Enter Your RDS DB Name"
+
+
   DBInstanceClass:
     Type: String
     Default: db.t3.micro
     Description: "Enter Your RDS Instance Class"
+
+
   DBAllocatedStorage:
     Default: '20'
     Description: The size of the database (GiB)
@@ -67,14 +93,20 @@ Parameters:
     MinValue: '20'
     MaxValue: '65536'
     ConstraintDescription: must be between 20 and 65536 GiB.
+
+
   DBEngine:
     Type: String
     Default: 'MySQL'
     Description: Enter Your RDS DB Engine Type
+
+
   EngineVersion:
     Type: String
     Default: '8.0.33'
     Description: Enter Your RDS DB Engine Version
+
+
   DBUsername:
     NoEcho: 'true'
     Description: Username for MySQL database access
@@ -84,6 +116,8 @@ Parameters:
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    
   DBPassword:
     NoEcho: 'true'
     Description: Password MySQL database access
