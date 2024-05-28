@@ -1,5 +1,7 @@
+
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template to create a VPC, subnets, security groups, ASG, ALB, S3, IAM roles and RDS.
+
 
 Parameters:
   bucketName:
@@ -92,6 +94,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z0-9]*'
     ConstraintDescription: must contain only alphanumeric characters.
 
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -102,6 +105,7 @@ Resources:
       Tags:
         - Key: stack
           Value: production
+
 
   PublicSubnet1:
     Type: AWS::EC2::Subnet
@@ -114,6 +118,7 @@ Resources:
         - Key: stack
           Value: production
 
+
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -125,6 +130,7 @@ Resources:
         - Key: stack
           Value: production
 
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -132,11 +138,13 @@ Resources:
         - Key: stack
           Value: production
   
+
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
+
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
@@ -146,6 +154,7 @@ Resources:
         - Key: stack
           Value: production
 
+
   PublicRoute:
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
@@ -153,6 +162,7 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
+
 
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -172,6 +182,7 @@ Resources:
         - IpProtocol: "-1"
           CidrIp: 0.0.0.0/0
 
+
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -185,6 +196,7 @@ Resources:
       SecurityGroupEgress:
         - IpProtocol: "-1"
           CidrIp: 0.0.0.0/0
+
 
   RDSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -200,6 +212,7 @@ Resources:
         - IpProtocol: "-1"
           CidrIp: 0.0.0.0/0
 
+
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
@@ -208,6 +221,7 @@ Resources:
       SecurityGroups:
         - !Ref EC2SecurityGroup
       KeyName: !Ref EC2KeyPair
+
 
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -224,6 +238,7 @@ Resources:
           Value: AutoScalingInstance
           PropagateAtLaunch: 'true'
 
+
   ALBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -235,6 +250,7 @@ Resources:
       HealthCheckPort: '80'
       HealthCheckPath: /
       TargetType: instance
+
 
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -250,12 +266,14 @@ Resources:
         - Key: idle_timeout.timeout_seconds
           Value: '60'
 
+
   S3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: !Ref bucketName
       VersioningConfiguration:
         Status: Enabled
+
 
   IAMRole:
     Type: AWS::IAM::Role
@@ -276,6 +294,7 @@ Resources:
                 Action: s3:*
                 Resource: "*"
 
+
   DBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -294,6 +313,7 @@ Resources:
       BackupRetentionPeriod: 7
       MultiAZ: false
 
+
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
@@ -302,30 +322,37 @@ Resources:
         - !Ref PublicSubnet1
         - !Ref PublicSubnet2
 
+
 Outputs:
   VPCId:
     Description: VPC ID
     Value: !Ref VPC
 
+
   PublicSubnet1:
     Description: Public Subnet 1 ID
     Value: !Ref PublicSubnet1
+
 
   PublicSubnet2:
     Description: Public Subnet 2 ID
     Value: !Ref PublicSubnet2
 
+
   ALBArn:
     Description: Application Load Balancer ARN
     Value: !GetAtt ALB.LoadBalancerArn
+
 
   ALBDNSName:
     Description: Application Load Balancer DNS Name
     Value: !GetAtt ALB.DNSName
 
+
   AutoScalingGroup:
     Description: Auto Scaling Group Name
     Value: !Ref AutoScalingGroup
+
 
   DBInstanceEndpoint:
     Description: The connection endpoint for the RDS DB instance
