@@ -384,15 +384,15 @@ Outputs:
 
 
   ALBDNSName:
-    Description: Application Load Balancer DNS Name
+    Description: Application Load Balancer DNS Name.
     Value: !GetAtt ALB.DNSName
 
 
   AutoScalingGroup:
-    Description: Auto Scaling Group Name
+    Description: Auto Scaling Group Name.
     Value: !Ref AutoScalingGroup
 
 
   DBInstanceEndpoint:
-    Description: The connection endpoint for the RDS DB instance
+    Description: The connection endpoint for the RDS DB instance.
     Value: !GetAtt DBInstance.Endpoint.Address
